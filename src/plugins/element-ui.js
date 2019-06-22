@@ -1,0 +1,8 @@
+import Vue from 'vue'
+import ElementUI from 'element-ui'
+import locale from 'element-ui/lib/locale/lang/en'
+
+
+export default function installElementUI () {
+  Vue.use(ElementUI, { locale, size: 'mini' })
+}

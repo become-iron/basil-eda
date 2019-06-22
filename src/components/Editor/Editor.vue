@@ -1,12 +1,14 @@
 <template>
-  <div ref="graph"
-       class="graph" />
+  <div
+    ref="graph"
+    class="graph"
+  />
 </template>
 
 <script>
   // import _ from 'lodash'
   import keycode from 'keycode'
-  import mxgraph from '../../mxgraph'
+  import mxgraph from '../../plugins/mxgraph'
 
   import defaultGraphSetting from './defaultSettings'
 
@@ -90,8 +92,15 @@
         //     return convertValueToString.call(this, cell)
         //   }
         // }
+
+        // get cell label
         this.graph.convertValueToString = function (cell) {
-          return cell.value.label
+          return cell.value.title
+        }
+
+        // set cell label
+        this.graph.cellLabelChanged = function (cell, newValue) {
+          cell.value.title = newValue
         }
 
         // const cellLabelChanged = this.graph.cellLabelChanged
@@ -104,10 +113,6 @@
         //
         //   cellLabelChanged.call(this, cell, newValue, autoSize)
         // }
-        this.graph.cellLabelChanged = function (cell, newValue, autoSize) {
-          cell.value.label = newValue
-          this.graph.prototype.cellLabelChanged.call(this, cell, newValue, autoSize)
-        }
 
         // TODO: remove
         // const getInitialValue = mxgraph.mxCellEditor.prototype.getInitialValue
@@ -207,13 +212,13 @@
           this.handleComponentsSelection(newSelection, previousSelection)
         })
 
-        this.$bus.$on('create-new-project', () => { this.createNewProject() })
-        this.$bus.$on('open-project', projectDescription => { this.openProject(projectDescription) })
-        this.$bus.$on('prepare-thumbnails', library => { this.prepareThumbnails(library) })
-        this.$bus.$on(
-          'insert-shape',
-          (shapeName, shapeValue, coordinates) => { this.addComponentByStencil(shapeName, shapeValue, coordinates) }
-        )
+        // this.$bus.$on('create-new-project', () => { this.createNewProject() })
+        // this.$bus.$on('open-project', projectDescription => { this.openProject(projectDescription) })
+        // this.$bus.$on('prepare-thumbnails', library => { this.prepareThumbnails(library) })
+        // this.$bus.$on(
+        //   'insert-shape',
+        //   (shapeName, shapeValue, coordinates) => { this.addComponentByStencil(shapeName, shapeValue, coordinates) }
+        // )
       },
 
       adjustGraphSettings () {
@@ -303,21 +308,23 @@
 
       /** Handles cells selection */
       handleComponentsSelection (selected, deselected) {
-        // TODO: consider edges selection
-        const deselectedComponents = deselected.filter(cell => cell.vertex)
-
-        // remove deselected components
-        let selectedComponents = this.$store.state.selectedComponents.slice(0)  // shallow copy
-        selectedComponents = selectedComponents
-          .filter(component => !deselectedComponents.find(cell => cell.value.id === component.id))
-
-        // add new selected components
-        const components = selected
-          .filter(cell => cell.vertex)
-          .map(cell => cell.value)
-        selectedComponents.push(...components)
-
-        this.$store.commit('setSelectedComponents', selectedComponents)
+        [selected, deselected] = [selected, deselected].map(nodes => nodes.map(node => node.value))
+        this.$emit('components:selection', { selected, deselected })
+        // // TODO: consider edges selection
+        // const deselectedComponents = deselected.filter(cell => cell.vertex)
+        //
+        // // remove deselected components
+        // let selectedComponents = this.$store.state.selectedComponents.slice(0)  // shallow copy
+        // selectedComponents = selectedComponents
+        //   .filter(component => !deselectedComponents.find(cell => cell.value.id === component.id))
+        //
+        // // add new selected components
+        // const components = selected
+        //   .filter(cell => cell.vertex)
+        //   .map(cell => cell.value)
+        // selectedComponents.push(...components)
+        //
+        // this.$store.commit('setSelectedComponents', selectedComponents)
       },
 
       prepareThumbnails (library) {
@@ -396,7 +403,7 @@
       },
 
       // TODO: change function signature: it should take a component object and its coordinates
-      addComponentByStencil (stencilName, shapeValue='', coords) {
+      addComponentByStencil (stencilName, shapeValue = '', coords) {
         const parent = this.graph.getDefaultParent()
         const model = this.graph.model
         const style = `shape=${stencilName};`

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import EditorPage from './views/EditorPage/index'
+import EditorPage from '../views/EditorPage'
 
 
 Vue.use(Router)
@@ -13,7 +13,15 @@ export default new Router({
   routes: [
     {
       path: '/',
+      redirect: '/editor'
+    },
+    {
+      path: '/editor',
       component: EditorPage
+    },
+    {
+      path: '*',
+      redirect: '/'
     }
   ]
 })

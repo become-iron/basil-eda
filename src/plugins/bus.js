@@ -1,6 +1,6 @@
 import Vue from 'vue'
 
-import { beforeDestroy } from './utils/vue'
+import { beforeDestroy } from '../utils/vue'
 
 
 export default new Vue({

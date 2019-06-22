@@ -1,4 +1,4 @@
-import mxgraph from '../mxgraph'
+import mxgraph from '../plugins/mxgraph'
 
 
 const thumbnailsGraph = new mxgraph.mxGraph(document.createElement('div'))

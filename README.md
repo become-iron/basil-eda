@@ -1,4 +1,4 @@
-# basil_eda
+# Basil EDA
 
 ## Project setup
 ```

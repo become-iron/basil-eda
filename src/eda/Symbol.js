@@ -1,15 +1,19 @@
+// noinspection JSUnusedGlobalSymbols
+import uuid from 'uuid/v4'
+
+
 export class Symbol {
-  constructor (graph, type, cell) {
-    this.graph = graph
+  constructor ({ id = uuid(), title = null, type }) {
+    this.id = id
     this.type = type
-    this.cell = cell
+    this.title = title
   }
 
-  get label () {
-    return this.graph.convertValueToString(this.cell)
-  }
-
-  set label (newValue) {
-    this.graph.cellLabelChanged(this.cell, newValue)
-  }
+  // get title () {
+  //   return this._title
+  // }
+  //
+  // set title (title) {
+  //   this._title = title
+  // }
 }
